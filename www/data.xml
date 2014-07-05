@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<root>
+	<tables>
+		<table name="language">
+			<row>
+				<column name="id"> 1 </column>
+				<column name="name"> Nederlands </column>
+			</row>
+			
+			<row>
+				<column name="id"> 2 </column>
+				<column name="name"> English </column>
+			</row>
+			
+			<row>
+				<column name="id"> 3 </column>
+				<column name="name"> Svenska </column>
+			</row>
+		</table>
+	</tables>
+</root>
+

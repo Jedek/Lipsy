@@ -1,0 +1,48 @@
+body, html {
+	text-align: center;
+	height: 100%;
+	width: 100%;
+}
+
+#content {
+	-webkit-overflow-scrolling: touch !important;
+	-webkit-transform: translate3d(0px,0px,0px);
+}
+
+/**
+ * 	Index CSS
+ */
+#home .row {
+	width: 90%;
+}
+
+.panel {
+	border-radius: 10%;
+	border: 5px double #865F42;
+	background-color: #EBD0BC;
+}
+
+.languages {
+	height: 15% !important;
+	width: 90%;
+}
+
+.language {	
+	height: 70% !important;
+	padding-top: 2%;
+	padding-bottom: 2%;
+}
+
+.chosen {
+	border-radius: 100%;
+	border: 1px solid black;
+}
+
+.options {
+	width: 90%;
+}
+
+.practice {
+	width: 90%;
+}
+

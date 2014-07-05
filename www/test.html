@@ -1,0 +1,63 @@
+<div class="page"> 
+	<div id="header" style="position: absolute; width: 100%;"> Your Header </div> 
+	<div id="content"> <div class="row languages panel">
+    		<h3>Choose Language:</h3>
+    	</div>
+    	
+    	<div class="row panel">
+    		<div class="small-6  columns">
+    			<h3>Add Word</h3>
+    			<input type="text">
+    			<a href="#" class="button"> Add </a>
+			</div>
+    		<div class="small-5 columns">
+				<h3>Latest</h3>
+				<p>A word!</p>
+				<a href="#" class="button"> View </a>
+			</div>
+    	</div>
+    	
+    	<div class="row panel">
+    		<div class="small-6 columns">
+				<a href="#" id="practice" class="button"> Practice Language </a>
+			</div>
+			<div class="small-5 columns">
+				<a href="#" class="button">Search Word</a>
+			</div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="columns panel">
+    			<h3>Statistics</h3>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Words:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Sounds:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Notes:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Translations:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    		</div>
+    	</div></div> 
+	<div id="footer" style="position: absolute; width: 100%; bottom: 0px;"> Your Footer </div> 
+
+	<script type="text/javascript"> 
+		$(document).ready(function() { 
+			$("#content").css("top", $("#header").height() + "px"); 
+			$("#content").height($(window).height() - $("#header").height() - $("#footer").height() + "px"); 
+			var scroller = new nova.Scroller("#content"); //todo: set other properties of the scroller 
+			scroller.init(); }); 
+	</script> 
+</div>

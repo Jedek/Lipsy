@@ -1,0 +1,97 @@
+<div class="page" id="home">
+    <div id="header" class="bar">
+        LipSy
+    </div>
+    <div id="content">
+    	
+    	<div class="row languages panel">
+    		<h3>Choose Language:</h3>
+    	</div>
+    	
+    	<div class="row panel">
+    		<div class="small-6  columns">
+    			<h3>Add Word</h3>
+    			<input type="text">
+    			<a href="#" class="button"> Add </a>
+			</div>
+    		<div class="small-5 columns">
+				<h3>Latest</h3>
+				<p>A word!</p>
+				<a href="#" class="button"> View </a>
+			</div>
+    	</div>
+    	
+    	<div class="row panel">
+    		<div class="small-6 columns">
+				<a href="#" id="practice" class="button"> Practice Language </a>
+			</div>
+			<div class="small-5 columns">
+				<a href="#" class="button">Search Word</a>
+			</div>
+    	</div>
+    	
+    	<div class="row">
+    		<div class="columns panel">
+    			<h3>Statistics</h3>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Words:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Sounds:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Notes:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    			
+    			<div class="row">
+    				<div class="small-7 columns">Translations:</div>
+    				<div class="small-3 columns">dsa</div>
+    			</div>
+    		</div>
+    	</div>
+    	
+	</div>
+</div>
+
+<script type="text/javascript">
+    (function () {
+    	
+    	var scroller = new nova.Scroller("#content");
+       	scroller.init();
+    	
+		var languages = nova.application.currentPage.languages;
+		var chosen = nova.application.currentPage.chosen;
+		
+		$('.languages h3').nextAll().remove();
+		    
+		app.log("Chosen: " + chosen);
+		for(i=0;i<languages.length;i++) {
+			
+			if(languages[i].id == chosen) {
+				var language = '<div class="language columns chosen" data-attribute="'+languages[i].id+'">'+languages[i].name+'</div>';	
+				$("#practice").html("Practice " + languages[i].name);
+			} else {
+				var language = '<div class="language columns" data-attribute="'+languages[i].id+'">'+languages[i].name+'</div>';
+			}
+			
+			
+			$(".languages").append(language);
+		}
+		
+		$(".language").on("click", function(){
+			$(".language").removeClass('chosen');
+			
+			$(this).addClass("chosen");
+			
+			app.execute.updateApp('latest_language', $(this).attr('data-attribute'));
+			
+			$("#practice").html("Practice " + $(this).text());
+		});
+    })();
+</script>

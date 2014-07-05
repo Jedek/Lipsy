@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<database>
+	<tables>
+		
+		<table name="language">
+			<columns>
+				<column name="id" type="integer"></column>
+				<column name="name" type="varchar(50)"></column>
+			</columns>
+		</table>
+		
+		<table name="word">
+			<columns>
+				<column name="id" type="integer"></column>
+				<column name="translation" type="integer"></column>
+				<column name="name" type="varchar(50)"></column>
+				<column name="text" type="text"></column>
+				<column name="date" type="timestamp"></column>
+				<column name="language" type="integer"></column>
+				<column name="soundFile" type="text"></column>
+			</columns>
+		</table>
+		
+		<table name="sentence">
+			<columns>
+				<column name="word" type="integer"></column>
+				<column name="text" type="text"></column>
+				<column name="date" type="timestamp"></column>
+			</columns>
+		</table>
+
+		<table name="note">
+			<columns>
+				<column name="word" type="integer"></column>
+				<column name="type" type="varchar(15)"></column>
+				<column name="text" type="text"></column>
+				<column name="date" type="timestamp"></column>
+			</columns>
+		</table>
+		
+		<table name="app">
+			<columns>
+				<column name="id" type="integer"></column>
+				<column name="latest_language" type="integer"></column>
+				<column name="latest_word" type="integer"></column>
+				<column name="latest_note" type="integer"></column>
+				<column name="latest_translation" type="integer"></column>
+				<column name="latest_pronounciation" type="integer"></column>
+				<column name="latest_sentence" type="integer"></column>
+				<column name="database_set_up" type="integer"></column>
+			</columns>
+		</table>
+	</tables>
+</database>
