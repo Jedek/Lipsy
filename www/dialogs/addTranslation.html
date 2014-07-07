@@ -1,0 +1,73 @@
+<h2 id="translationTitle"><img class="theLanguage" src="theme/img/dutch.png" style="width: 50px;"> <span>Translate the word</span></h2>
+
+<p>Below you can translate the word to another language. Choose the proper flag and write the translation.</p>
+
+<p style="display: hidden; color: red;" class="error"> </p>
+
+<div class="row translationLanguages">
+	
+	
+</div>
+
+<a href="#" id="translateWord" class="button expand">Done</a>
+
+<script type="text/javascript">
+		
+		$("#translationTitle span").html();
+		
+		app.log("Getting latest word");
+		app.execute.getLatestWord(function(word){
+			
+			app.execute.getLanguage(word.language, function(language){
+				$("#translationTitle span").html("Translate " + word.word);
+			
+				$(".theLanguage").attr('src', 'theme/img/'+language.image);
+			
+				app.execute.getAllLanguages(function(languages){
+				
+					$(".translationLanguages").html();
+				
+					for(i = 0; i<languages.length;i++) {
+						if(languages[i].id != language.id) {
+							var item = '<div class="medium-5 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'" style="width: 100px;"> <input id="language-'+languages[i].id+'" type="text"> <a href="#" id="update-'+languages[i].id+'" class="button updateLanguage">Add '+languages[i].name+' Translation</a></div>';
+							
+							$(".translationLanguages").append(item);
+							
+							$("#update-"+languages[i].id).on("click tap", function(){
+								var language = $(this).parent().attr('data-attribute');
+								var translation = $("#language-"+language).val();
+								
+								app.execute.updateTranslation(word.id, translation, language);
+								
+								$("#language-"+languages[i].id).html("Update Translation");
+								$("#language-"+language).parent().append('<a href="#" id="remove-'+language+'" class="button remove">Remove Translation</a>');
+							});
+						}
+					}
+				});
+				
+				app.execute.getTranslations(word, function(translations){
+						if(translations != null) {
+							if(translations.length == undefined) {
+								app.log("adding translation");
+								app.log("adding translation: " + translations.word);
+								$("#language-"+translations.id).val(translations.word);
+								$("#update-"+translations.id).html("Update Translation");
+								$("#language-"+translations.id).parent().append('<a href="#" id="remove-'+translations.id+'" class="button remove">Remove Translation</a>');
+							} else {
+								app.log("adding translations");
+								for(i=0;i<translations.length;i++) {
+									$("#language-"+translations[i].language).val(translations[i].word);
+									$("#update-"+translations[i].language).html("Update Translation");
+									$("#language-"+translations[i].language).parent().append('<a href="#" id="remove-'+translations[i].id+'" class="button remove">Remove Translation</a>');	
+								}
+							}
+						}
+					});
+			});
+		});
+		
+		$("#translateWord").on("click tap", function(){
+			$('#translateModal').foundation('reveal', 'close');
+		});
+</script>

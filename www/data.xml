@@ -4,18 +4,21 @@
 	<tables>
 		<table name="language">
 			<row>
-				<column name="id"> 1 </column>
-				<column name="name"> Nederlands </column>
+				<column name="id">1</column>
+				<column name="name">Nederlands</column>
+				<column name="image">dutch.png</column>
 			</row>
 			
 			<row>
-				<column name="id"> 2 </column>
-				<column name="name"> English </column>
+				<column name="id">2</column>
+				<column name="name">English</column>
+				<column name="image">us.png</column>
 			</row>
 			
 			<row>
-				<column name="id"> 3 </column>
-				<column name="name"> Svenska </column>
+				<column name="id">3</column>
+				<column name="name">Svenska</column>
+				<column name="image">swedish.png</column>
 			</row>
 		</table>
 	</tables>

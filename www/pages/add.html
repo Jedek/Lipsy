@@ -1,0 +1,41 @@
+<div class="page" id="add">
+    <div id="header" class="bar">
+        LipSy - Words
+    </div>
+    <div id="content">
+    	<div class="row panel" align="left">
+    		<div class="small-3 columns">
+    			<img id="chosen" src="theme/img/us.png"> <br>
+    			<a href="#" id="back" class="button expand">Back</a>
+    		</div>
+    		<div class="small-8 columns">
+    			<input type="text" id="the_word"> <br>
+    			<a href="#" id="add" class="button expand">Add</a>
+    		</div>
+    	</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+    (function () {    	
+    	var chosen = nova.application.currentPage.chosen;
+    	
+    	onLoad(chosen);
+    })();
+    
+    function onLoad(chosen) {
+    	$("#chosen").attr("src", "theme/img/" + chosen.image);
+    }
+    
+    $("#add").on("click tap", function(){
+    	var word = $("#the_word").val();
+    	
+    	app.execute.addWord(word, function(){
+    		
+    	});
+    });
+    
+    $("#back").on("click tap", function(){
+    	app.load.index();
+    });
+</script>

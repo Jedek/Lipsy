@@ -29,11 +29,66 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	/**
 	 * Specific DB Use 
 	 */
-	
 	this.getLanguages = function(callback) {
 		var sql = "SELECT * FROM language";
 		
 		store.selectSQL(sql, callback);
+	};
+	
+	this.getLanguage = function(id, callback) {
+		var sql = "SELECT * FROM language WHERE id = " + id;
+		
+		store.selectSQL(sql, callback);
+	};
+	
+	this.addWord = function(word, language, callback) {
+		var sql = "SELECT * FROM word WHERE word LIKE '%" + word + "' AND language="+language+";";
+		
+		store.selectSQL(sql, function(result){
+			if(result == null) {
+				sql = "INSERT INTO word (word, language) VALUES ('"+word+"', "+language+");";
+				
+				store.executeSQL(sql);
+				
+				callback(true);
+			} else {
+				callback(false);
+			}
+		});
+	};
+	
+	this.getWord = function(id, callback) {
+		var sql = "SELECT * FROM word WHERE id =" + id;
+		
+		store.selectSQL(sql, callback);
+	};
+	
+	this.getWordByText = function(word, callback) {
+		var sql = "SELECT * FROM word WHERE word LIKE '%"+word+"'";
+		
+		store.selectSQL(sql, callback);
+	};
+	
+	this.getTranslations = function(word, callback) {
+		var sql = "SELECT w.* from word w INNER JOIN word_translation t ON w.id = t.translation WHERE t.word ="+word;
+		
+		store.selectSQL(sql, callback);
+	};
+	
+	this.addTranslation = function(word, translation, language, callback) {
+		app.log("Translation: " + translation, 'store');
+		store.addWord(translation, language, function(result){
+			var select = "SELECT * FROM word WHERE language ="+language+" AND word ='"+translation+"'";
+			
+			store.selectSQL(select, function(translatedWord){
+				var sql = "INSERT OR REPLACE INTO word_translation (word, translation) VALUES ("+word+", "+translatedWord.id+");";
+				store.executeSQL(sql);
+				
+				sql = "INSERT OR REPLACE INTO word_translation (word, translation) VALUES ("+translatedWord.id+", "+word+");";
+				store.executeSQL(sql);		
+			});
+			
+		});
 	};
 	
 	this.setAppData = function(callback){

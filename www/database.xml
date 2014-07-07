@@ -7,18 +7,24 @@
 			<columns>
 				<column name="id" type="integer"></column>
 				<column name="name" type="varchar(50)"></column>
+				<column name="image" type="varchar(50)"></column>
 			</columns>
 		</table>
 		
 		<table name="word">
 			<columns>
 				<column name="id" type="integer"></column>
-				<column name="translation" type="integer"></column>
-				<column name="name" type="varchar(50)"></column>
-				<column name="text" type="text"></column>
+				<column name="word" type="varchar(50)"></column>
 				<column name="date" type="timestamp"></column>
 				<column name="language" type="integer"></column>
 				<column name="soundFile" type="text"></column>
+			</columns>
+		</table>
+		
+		<table name="word_translation">
+			<columns>
+				<column name="word" type="integer"></column>
+				<column name="translation" type="integer"></column>
 			</columns>
 		</table>
 		

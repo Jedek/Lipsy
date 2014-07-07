@@ -1,0 +1,38 @@
+<h2><img class="theLanguage" src="theme/img/" style="width: 50px;"> Add a word</h2>
+
+<p>Below you can add a word to your dictionary. After you've added the word, you can add more information.</p>
+
+<p style="display: hidden; color: red;" class="error"> </p>
+
+<input type="text" id="theWord">
+
+<a href="#" id="addWord" class="button expand">Add Word</a>
+
+<div id="translateModal" class="reveal-modal" data-reveal>
+  
+</div>
+
+<script type="text/javascript">
+		app.execute.getChosenLanguage(function(language){
+			$(".theLanguage").attr('src', 'theme/img/'+language.image);
+		});
+
+		$("#addWord").on("click tap", function(){
+			$(".error").html();
+			$(".error").hide();
+			
+			var word = $("#theWord").val();
+			
+			app.log("adding word " + word);
+			
+			app.execute.addWord(word, function(result){
+				if(result) {
+					app.log("We have a positive result!");
+					$('#translateModal').foundation('reveal', 'open', 'dialogs/addTranslation.html');
+				} else {
+					$(".error").html("This word already exists in your dictionary");
+					$(".error").show();
+				}
+			});
+		});
+</script>
