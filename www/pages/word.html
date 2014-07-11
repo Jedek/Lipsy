@@ -1,0 +1,64 @@
+<div class="page" id="home">
+    <div id="header" class="bar">
+        LipSy
+    </div>
+    <div id="content">
+    	<div class="panel">
+    		<h2 id="wordTitle"><img class="theLanguage" src="theme/img/dutch.png" style="width: 50px;"> <span>Word</span></h2>
+    	</div>
+    	
+    	<div class="wordTranslations row">
+    		
+    	</div>
+    	
+    	<div class="row panel">
+    		<h3>Pronounciation</h3>
+    		<a class="button">Add Pronounciation</a><br>
+    	</div>
+    	
+    	<div class="row panel">
+    		<h3>Sentences</h3>
+    		<a class="button">Add Sentence</a><br>
+    	</div>
+    	
+    	<div class="row">
+    		<a id="back" class="button expand">Back to main menu</a>
+    	</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+	var word = nova.application.currentPage.the_word;
+	var language = nova.application.currentPage.the_language;
+	
+	$("#wordTitle img").attr("src", "theme/img/"+language.image);
+	$("#wordTitle span").html(word.word);
+	
+	$("#back").on("click tap", function(){
+		app.load.index();
+	});
+	
+	app.execute.getTranslations(word.id, function(translations){
+		app.execute.getAllLanguages(function(languages){
+			$(".wordTranslations").empty();
+			for(i=0;i<languages.length;i++) {
+				if(languages[i].id != language.id) {
+					var div = '<div id="language-'+languages[i].id+'" class="panel small-5 columns" data-attribute="'+languages[i].id+'"><img class="theLanguage" src="theme/img/'+languages[i].image+'" style="width: 30px;"> <a> </a></div>';
+					
+					$(".wordTranslations").append(div);
+				}
+				
+				for(b=0;b<translations.length;b++) {
+					$("#language-"+translations[b].language+" a").html(translations[b].word);
+					$("#language-"+translations[b].language+" a").attr('data-attribute', translations[b].id);
+					
+					$("#language-"+translations[b].language+" a").on("click tap", function(){
+						var goToWord = $(this).attr("data-attribute");
+						
+						app.load.word(goToWord);
+					});
+				}
+			}
+		});
+	});
+</script>

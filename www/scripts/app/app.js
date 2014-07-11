@@ -46,8 +46,30 @@ var app = {
     			
     			nova.application.gotoPage(add);
     		});
+    	},
+    	
+    	word: function(word) {
+    		var wordPage = new nova.Page("pages/word.html");
     		
-    		
+    		if(word == null) {
+    			app.execute.getLatestWord(function(theWord){
+    				app.execute.getLanguage(theWord.language, function(language){
+    					wordPage.the_word = theWord;
+    					wordPage.the_language = language;
+    				
+    					nova.application.gotoPage(wordPage);
+    				});
+    			});	
+    		} else {
+    			app.execute.getWord(word, function(theWord){
+    				app.execute.getLanguage(theWord.language, function(language){
+    					wordPage.the_word = theWord;
+    					wordPage.the_language = language;
+    				
+    					nova.application.gotoPage(wordPage);
+    				});    				
+    			});
+    		}
     	}
     },
     
@@ -89,25 +111,46 @@ var app = {
     		});
     	},
     	
+    	getWord: function(id, callback) {
+    		app.store.getWord(id, callback);
+    	},
+    	
     	addWord: function(word, callback) {
     		app.execute.getChosenLanguage(function(language){
     			app.store.addWord(word, language.id, function(result){
-	    			app.store.getWordByText(word, function(theWord){
-	    				app.log("Latest word is: " + word);
-	    				app.execute.updateApp('latest_word', theWord.id);
-	    				callback(result);
-	    			});
+					app.log("Latest word is: " + result.word);
+					app.execute.updateApp('latest_word', result.id);
+					callback(result);
     			});
     		});
     	},
     	
     	getTranslations: function(word, callback) {
-    		app.store.getTranslations(word.id, callback);
+    		app.store.getTranslations(word, function(translations){
+    			if(Array.isArray(translations)) {
+    				callback(translations);
+    			} else {
+    				var array = [];
+    				array.push(translations);
+    				callback(array);
+    			}
+    		});
     	},
     	
-    	updateTranslation: function(word, translation, language, callback) {
-    		app.log("Translation: " + translation, 'App');
-    		app.store.addTranslation(word, translation, language, callback);
+    	/**
+    	 * 
+		 * @param {Object} word 		The Original Word
+		 * @param {Object} translation  Translation of the Original Word
+		 * @param {Object} translation_id			ID of the translation word
+		 * @param {Object} language		ID of the language of the translation
+		 * @param {Object} callback
+    	 */
+    	updateTranslation: function(word, translation, translation_id, language, callback) {
+    		app.store.addTranslation(word, translation, translation_id, language, callback);
+    	},
+    	
+    	removeTranslation: function(word, callback) {
+    		app.store.removeTranslation(word, callback);	
     	}
     }
 };

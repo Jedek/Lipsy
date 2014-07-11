@@ -9,9 +9,14 @@
 	
 </div>
 
-<a href="#" id="translateWord" class="button expand">Done</a>
+<a  id="translateWord" class="button expand">Done</a>
 
 <script type="text/javascript">
+
+		$("#translateWord").on("click tap", function(){
+			$("#translateModal").foundation('reveal', 'close');
+			app.load.word();
+		});
 		
 		$("#translationTitle span").html();
 		
@@ -29,45 +34,55 @@
 				
 					for(i = 0; i<languages.length;i++) {
 						if(languages[i].id != language.id) {
-							var item = '<div class="medium-5 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'" style="width: 100px;"> <input id="language-'+languages[i].id+'" type="text"> <a href="#" id="update-'+languages[i].id+'" class="button updateLanguage">Add '+languages[i].name+' Translation</a></div>';
+							var item = '<div class="medium-5 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'" style="width: 100px;"> <input id="language-'+languages[i].id+'" type="text"> <a id="update-'+languages[i].id+'" class="button updateLanguage">Add '+languages[i].name+' Translation</a></div>';
 							
 							$(".translationLanguages").append(item);
 							
 							$("#update-"+languages[i].id).on("click tap", function(){
 								var language = $(this).parent().attr('data-attribute');
 								var translation = $("#language-"+language).val();
+								var translation_id = $("#language-"+language).attr('data-attribute');
 								
-								app.execute.updateTranslation(word.id, translation, language);
+								app.execute.updateTranslation(word.id, translation, translation_id, language, function(theTranslation){
+									$("#language-"+language).html("Update Translation");
+									$("#language-"+language).parent().append('<a  id="remove-'+language+'"data-attribute="'+theTranslation+'" class="button remove">Remove Translation</a>');
+									
+									addRemoveEvent(language);
+								});
 								
-								$("#language-"+languages[i].id).html("Update Translation");
-								$("#language-"+language).parent().append('<a href="#" id="remove-'+language+'" class="button remove">Remove Translation</a>');
 							});
 						}
 					}
 				});
 				
-				app.execute.getTranslations(word, function(translations){
-						if(translations != null) {
-							if(translations.length == undefined) {
-								app.log("adding translation");
-								app.log("adding translation: " + translations.word);
-								$("#language-"+translations.id).val(translations.word);
-								$("#update-"+translations.id).html("Update Translation");
-								$("#language-"+translations.id).parent().append('<a href="#" id="remove-'+translations.id+'" class="button remove">Remove Translation</a>');
-							} else {
-								app.log("adding translations");
-								for(i=0;i<translations.length;i++) {
-									$("#language-"+translations[i].language).val(translations[i].word);
-									$("#update-"+translations[i].language).html("Update Translation");
-									$("#language-"+translations[i].language).parent().append('<a href="#" id="remove-'+translations[i].id+'" class="button remove">Remove Translation</a>');	
-								}
-							}
+				app.execute.getTranslations(word.id, function(array){
+					if(array != null) {
+						for(i=0;i<array.length;i++) {
+							$("#language-"+array[i].language).val(array[i].word);
+							$("#update-"+array[i].language).html("Update Translation");
+							
+							$("#language-"+array[i].language).attr("data-attribute", array[i].id);
+							app.log("added word id: " + $("#language-"+array[i].language).attr('data-attribute'));
+							
+							$("#language-"+array[i].language).parent().append('<a  id="remove-'+array[i].language+'" class="button remove" data-attribute="'+array[i].id+'">Remove Translation</a>');	
+							
+							addRemoveEvent(array[i].language);
 						}
-					});
+					}
+				});
 			});
 		});
 		
-		$("#translateWord").on("click tap", function(){
-			$('#translateModal').foundation('reveal', 'close');
-		});
+		function addRemoveEvent(language) {
+			$("#remove-"+language).on("click tap", function(){
+				var word_id = $(this).attr('data-attribute');
+				var language = $(this).parent().attr('data-attribute');
+				
+				app.execute.removeTranslation(word_id, function(result){
+					$("#language-"+language).val('');
+					$("#remove-"+language).remove();
+					$("#update-"+language).html("Add Translation");
+				});
+			});
+		}
 </script>
