@@ -70,6 +70,12 @@ var app = {
     				});    				
     			});
     		}
+    	},
+    	
+    	search: function() {
+    		var search = new nova.Page("pages/search.html");
+    		
+    		nova.application.gotoPage(search);
     	}
     },
     
@@ -101,11 +107,15 @@ var app = {
     		app.store.getLanguage(id, callback);
     	},
     	
+    	findWord: function(search, callback) {
+    		app.store.findWord(search, callback);
+    	},
+    	
     	getLatestWord: function(callback) {
     		app.store.getAppData(function(result){
     			if(result != null) {
-    				app.log("Latest word id is: " + result.latest_word);
-    				var latest_word = result.latest_word;
+    				app.log("Latest word id is: " + JSON.stringify(result));
+    				var latest_word = result[0].latest_word;
     				app.store.getWord(latest_word, callback);
     			}
     		});
@@ -117,9 +127,9 @@ var app = {
     	
     	addWord: function(word, callback) {
     		app.execute.getChosenLanguage(function(language){
-    			app.store.addWord(word, language.id, function(result){
-					app.log("Latest word is: " + result.word);
-					app.execute.updateApp('latest_word', result.id);
+    			app.store.addWord(word, language[0].id, function(result){
+					app.log("Latest word is: " + result[0].word);
+					app.execute.updateApp('latest_word', result[0].id);
 					callback(result);
     			});
     		});
@@ -132,7 +142,7 @@ var app = {
     			} else {
     				var array = [];
     				array.push(translations);
-    				callback(array);
+    				callback(array, word);
     			}
     		});
     	},

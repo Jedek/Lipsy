@@ -1,0 +1,63 @@
+<div class="page" id="home">
+    <div id="header" class="bar">
+        LipSy
+    </div>
+    <div id="content">
+    	<div class="panel">
+    		<h2 id="wordTitle"><span>Search Word</span></h2>
+    		<input id="searchBox" type="text">
+    	</div>
+    	
+    	<div class="panel results">
+    		
+    	</div>
+	</div>
+</div>
+
+
+<script type="text/javascript">
+	$("#searchBox").on('input', function(){
+		var value = $(this).val();
+		
+		app.log("Searching for word: " + value);
+		
+		
+		app.execute.findWord(value, function(words){
+			$(".results").empty();
+			
+			if(value != "") {
+				words.forEach(function(word){
+					app.log(JSON.stringify(word), 'Test');
+					
+					app.execute.getTranslations(word.id, function(translations){
+						app.log("Translations for word: " + word.word + " are: " + JSON.stringify(translations));
+
+						var translateDiv = '<div class="row translations">';
+						translations.forEach(function(translation){
+							
+							if(translation != null) {
+								translateDiv += '<div class="small-6 columns">'+
+										'<img class="theLanguage" src="theme/img/'+translation.image+'"> <span>'+translation.word+'</span>'+
+									'</div>';	
+							}
+						});
+						translateDiv += '</div>';
+						
+						var div = '<div class="result">'+
+				    			'<div class="row theWord">'+
+					    			'<div class="small-6 columns">'+
+										'<img class="theLanguage" src="theme/img/'+word.image+'"> <span>'+word.word+'</span>'+
+									'</div>'+
+									'<div class="small-6 columns">'+
+										'<a href="#" class="button expand" data-value="'+word.id+'">View Word</a>'+
+									'</div>'+
+				    			'</div>'+
+				    			translateDiv+
+				    	'</div>';
+						$(".results").append(div);
+					});
+				});	
+			}
+		});
+	});
+</script>

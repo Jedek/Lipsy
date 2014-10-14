@@ -21,9 +21,11 @@
 		$("#translationTitle span").html();
 		
 		app.log("Getting latest word");
-		app.execute.getLatestWord(function(word){
+		app.execute.getLatestWord(function(theWord){
+			var word = theWord[0];
 			
-			app.execute.getLanguage(word.language, function(language){
+			app.execute.getLanguage(word.language, function(theLanguage){
+				var language = theLanguage[0];	
 				$("#translationTitle span").html("Translate " + word.word);
 			
 				$(".theLanguage").attr('src', 'theme/img/'+language.image);
@@ -34,6 +36,8 @@
 				
 					for(i = 0; i<languages.length;i++) {
 						if(languages[i].id != language.id) {
+							
+							app.log("Setting item: " + languages[i].name);
 							var item = '<div class="medium-5 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'" style="width: 100px;"> <input id="language-'+languages[i].id+'" type="text"> <a id="update-'+languages[i].id+'" class="button updateLanguage">Add '+languages[i].name+' Translation</a></div>';
 							
 							$(".translationLanguages").append(item);
@@ -49,14 +53,13 @@
 									
 									addRemoveEvent(language);
 								});
-								
 							});
 						}
 					}
 				});
 				
 				app.execute.getTranslations(word.id, function(array){
-					if(array != null) {
+					if(array[0] != null) {
 						for(i=0;i<array.length;i++) {
 							$("#language-"+array[i].language).val(array[i].word);
 							$("#update-"+array[i].language).html("Update Translation");

@@ -17,14 +17,16 @@
 </div>
 
 <script type="text/javascript">
-    (function () {    	
-    	var chosen = nova.application.currentPage.chosen;
     	
+    	var chosen = nova.application.currentPage.chosen;
+    	app.log("Test:" +JSON.stringify(chosen));
     	onLoad(chosen);
-    })();
-    
+		
+		$("#chosen").attr("src", "theme/img/" + chosen.image);
+		    
     function onLoad(chosen) {
-    	$("#chosen").attr("src", "theme/img/" + chosen.image);
+    	
+    	
     }
     
     $("#add").on("click tap", function(){

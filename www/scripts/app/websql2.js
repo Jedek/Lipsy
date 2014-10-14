@@ -66,6 +66,12 @@ var WebSqlStore = function(successCallback, errorCallback) {
 		store.executeSQL(sql);
 	};
 	
+	this.findWord = function(search, callback) {
+		var sql = "SELECT w.*, l.image AS image FROM word w INNER JOIN language l ON w.language = l.id WHERE w.word LIKE '"+search+"%' ORDER BY w.word ASC";
+		
+		store.selectSQL(sql, callback);
+	};
+	
 	this.getWord = function(id, callback) {
 		var sql = "SELECT * FROM word WHERE id =" + id;
 		
@@ -79,19 +85,23 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	};
 	
 	this.getTranslations = function(word, callback) {
-		var sql = "SELECT w.* from word w INNER JOIN word_translation t ON w.id = t.translation WHERE t.word ="+word+" OR t.translation="+word;
+		var sql = "SELECT w.*, l.image AS image from word w "+
+					"INNER JOIN word_translation t ON w.id = t.translation "+
+					"INNER JOIN language l ON w.language = l.id "+
+					"WHERE t.word ="+word;
+		
 		
 		store.selectSQL(sql, callback);
 	};
 	
 	this.addTranslation = function(word, translation, translation_id, language, callback) {
-		app.log("Word: " +word+ " translation " +translation+ " id: " +translation_id+ " language " + language);
+		app.log("Word: " +word+ " translation " +translation+ " id: " +translation_id+ " language " + language, "Test");
 		if(translation_id == undefined) {
 			store.log("Creating word for translation");
 			
 			store.addWord(translation, language, function(translated_word){
-				store.log("New word: " + translated_word.id + " with text: " + translated_word.word);
-				translation_id = translated_word.id;
+				store.log("New word: " + translated_word[0].id + " with text: " + translated_word[0].word);
+				translation_id = translated_word[0].id;
 				
 				store.addTranslation(word, translation, translation_id, language, callback);
 			});
@@ -315,7 +325,10 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	                		}
 	            			callback(results);
 	                	} else {
-	                		callback(result.rows.item(0));
+	                		var array = [];
+	                		
+	                		array.push(result.rows.item(0));
+	                		callback(array);
 	                	}
                 	}
 

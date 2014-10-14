@@ -12,7 +12,7 @@
     			<a href="#" id="add" class="button"> Add <br> Word </a>
 			</div>
     		<div class="small-6 columns">
-				<a href="#" class="button"> Search <br> Word </a>
+				<a href="#" id="search" class="button"> Search <br> Word </a>
 			</div>
 			
 			<div class="columns">
@@ -56,7 +56,7 @@
 		});
 		
 		$("#search").on("click tap", function(){
-			
+			app.load.search();
 		});
 		
 		$("#practice").on("click tap", function(){

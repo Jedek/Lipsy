@@ -15,7 +15,7 @@
 
 <script type="text/javascript">
 		app.execute.getChosenLanguage(function(language){
-			$(".theLanguage").attr('src', 'theme/img/'+language.image);
+			$(".theLanguage").attr('src', 'theme/img/'+language[0].image);
 		});
 		
 		$("#cancel").on("click tap", function(){
