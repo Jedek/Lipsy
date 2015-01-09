@@ -47,7 +47,7 @@ var WebSqlStore = function(successCallback, errorCallback) {
 		var select = "SELECT * FROM word WHERE word LIKE '" + word + "' AND language="+language+";";
 		
 		store.selectSQL(select, function(result){
-			if(result == null) {
+			if(result === null) {
 				sql = "INSERT INTO word (word, language) VALUES ('"+word+"', "+language+");";
 				
 				store.executeSQL(sql);
@@ -96,7 +96,7 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	
 	this.addTranslation = function(word, translation, translation_id, language, callback) {
 		app.log("Word: " +word+ " translation " +translation+ " id: " +translation_id+ " language " + language, "Test");
-		if(translation_id == undefined) {
+		if(translation_id === undefined) {
 			store.log("Creating word for translation");
 			
 			store.addWord(translation, language, function(translated_word){
@@ -128,7 +128,7 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	this.setAppData = function(callback){
 		var sql = "SELECT * FROM app";
 		store.selectSQL(sql, function(result){
-			if(result == null) {
+			if(result === null) {
 				sql = "INSERT INTO app (id) VALUES (1)";
 				store.executeSQL(sql);
 			}
@@ -315,7 +315,7 @@ var WebSqlStore = function(successCallback, errorCallback) {
                 	
                 	var results = [];
                 	
-                	if(result.rows.length == 0) {
+                	if(result.rows.length === 0) {
                 		callback(null);
                 	} else {            	
 	            		if(result.rows.length > 1) {
@@ -354,21 +354,21 @@ var WebSqlStore = function(successCallback, errorCallback) {
 	
 	this.log = function(message, type) {
 		
-		if(type == null) {
+		if(type === null) {
 			type = "WebSQL";
 		}
 		
-		if(debug == true) {
+		if(debug === true) {
 			app.log(message, type);	
 		}
 	};
 	
 	this.sqlLog = function(message, type) {
-		if(type == null) {
+		if(type === null) {
 			type = "SQL Debug";
 		}
 		
-		if(execute_debug == true) {
+		if(execute_debug === true) {
 			app.log(message, type);	
 		}
 		

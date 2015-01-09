@@ -1,11 +1,11 @@
 var app = {
-	
+
     initialize: function() {
     	app.log("Initializing program.");
     	
     	this.store = new WebSqlStore();
     	
-    	this.store.initialize(function(success){
+    	this.store.initialize(function(){
     		app.store.setAppData();
     		app.load.index();
     	});
@@ -13,7 +13,7 @@ var app = {
     },
     
     log: function(message, sender) {
-    	if(sender == null){
+    	if(sender === null){
     		sender = "Phonegap";
     	}
     	
@@ -51,7 +51,7 @@ var app = {
     	word: function(word) {
     		var wordPage = new nova.Page("pages/word.html");
     		
-    		if(word == null) {
+    		if(word === null) {
     			app.execute.getLatestWord(function(theWord){
     				app.execute.getLanguage(theWord.language, function(language){
     					wordPage.the_word = theWord;
@@ -89,8 +89,8 @@ var app = {
     			
     			var chosen_language = 1;
     			
-    			if(result != null) {
-    				if(result.latest_language != null) {
+    			if(result !== null) {
+    				if(result.latest_language !== null) {
     					chosen_language = result.latest_language;	
     				}	
     			}
@@ -113,7 +113,7 @@ var app = {
     	
     	getLatestWord: function(callback) {
     		app.store.getAppData(function(result){
-    			if(result != null) {
+    			if(result !== null) {
     				app.log("Latest word id is: " + JSON.stringify(result));
     				var latest_word = result[0].latest_word;
     				app.store.getWord(latest_word, callback);
