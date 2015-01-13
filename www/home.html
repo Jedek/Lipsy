@@ -27,60 +27,38 @@
 </div>
 
 <script type="text/javascript">
-    (function () {
-    	
-    	var languages = nova.application.currentPage.languages;
-		var chosen = nova.application.currentPage.chosen;
-    	    	
-		onLoad(languages, chosen);
-		
-		$(".language").on("click tap", function(){
-			$(".language img").removeClass('chosen');
-			$(this).find("img").addClass("chosen");
-			
-			var id = $(this).attr('data-attribute');
-			
-			app.execute.updateApp('latest_language', id);
-			
-			for(i=0;i<languages.length;i++) {
-				if(languages[i].id == id) {
-					$("#practice").html("Practice " + languages[i].name);	
-					$("#myModal img").attr('src', 'theme/img/'+languages[i].image);	
-				}
-			}
-			
-		});
-		
-		$("#add").on("click tap", function(){
-			 $('#wordModal').foundation('reveal', 'open', 'dialogs/addWord.html');
-		});
-		
-		$("#search").on("click tap", function(){
-			app.load.search();
-		});
-		
-		$("#practice").on("click tap", function(){
-			
-		});
-    })();
-    
-    function onLoad(languages, chosen) {		
-		$('.languages h3').nextAll().remove();
-		    
-		app.log("Chosen: " + chosen);
-		for(i=0;i<languages.length;i++) {
-			
-			if(languages[i].id == chosen.id) {
-				var language = '<div class="small-4 columns language" data-attribute="'+languages[i].id+'"><img class="chosen" src="theme/img/'+languages[i].image+'"></div>';
-				
-				$("#myModal img").attr('src', 'theme/img/'+languages[i].image);
-				$("#practice").html("Practice " + languages[i].name);
-			} else {
-				var language = '<div class="small-4 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'"></div>';
-			}
-			
-			
-			$(".languages").append(language);
+	$('.languages h3').nextAll().remove();
+
+	for(var language in app.database) {
+
+		if(app.database[language].chosen === true) {
+			var the_lang = '<div class="small-4 columns language" data-attribute="'+language+'"><img class="chosen" src="'+app.database[language].flag+'"></div>';
+		} else {
+			var the_lang = '<div class="small-4 columns language" data-attribute="'+language+'"><img src="'+app.database[language].flag+'"></div>';
 		}
-    }
+
+		$(".languages").append(the_lang);
+	}
+
+	$(".language").on("click tap", function(){
+		$(".language img").removeClass('chosen');
+		$(this).find("img").addClass("chosen");
+
+		var id = $(this).attr('data-attribute');
+
+		app.execute.setChosen(id);
+	});
+
+	$("#add").on("click tap", function(){
+		$('#wordModal').foundation('reveal', 'open', 'dialogs/addWord.html');
+	});
+
+	$("#search").on("click tap", function(){
+		app.load.search();
+	});
+
+	$("#practice").on("click tap", function(){
+
+	});
+
 </script>

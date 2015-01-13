@@ -9,83 +9,42 @@
 	
 </div>
 
-<a  id="translateWord" class="button expand">Done</a>
+<a id="translateWord" class="button expand">Done</a>
 
 <script type="text/javascript">
 
-		$("#translateWord").on("click tap", function(){
-			$("#translateModal").foundation('reveal', 'close');
-			app.load.word();
-		});
-		
-		$("#translationTitle span").html();
-		
-		app.log("Getting latest word");
-		app.execute.getLatestWord(function(theWord){
-			var word = theWord[0];
-			
-			app.execute.getLanguage(word.language, function(theLanguage){
-				var language = theLanguage[0];	
-				$("#translationTitle span").html("Translate " + word.word);
-			
-				$(".theLanguage").attr('src', 'theme/img/'+language.image);
-			
-				app.execute.getAllLanguages(function(languages){
-				
-					$(".translationLanguages").html();
-				
-					for(i = 0; i<languages.length;i++) {
-						if(languages[i].id != language.id) {
-							
-							app.log("Setting item: " + languages[i].name);
-							var item = '<div class="medium-5 columns language" data-attribute="'+languages[i].id+'"><img src="theme/img/'+languages[i].image+'" style="width: 100px;"> <input id="language-'+languages[i].id+'" type="text"> <a id="update-'+languages[i].id+'" class="button updateLanguage">Add '+languages[i].name+' Translation</a></div>';
-							
-							$(".translationLanguages").append(item);
-							
-							$("#update-"+languages[i].id).on("click tap", function(){
-								var language = $(this).parent().attr('data-attribute');
-								var translation = $("#language-"+language).val();
-								var translation_id = $("#language-"+language).attr('data-attribute');
-								
-								app.execute.updateTranslation(word.id, translation, translation_id, language, function(theTranslation){
-									$("#language-"+language).html("Update Translation");
-									$("#language-"+language).parent().append('<a  id="remove-'+language+'"data-attribute="'+theTranslation+'" class="button remove">Remove Translation</a>');
-									
-									addRemoveEvent(language);
-								});
-							});
-						}
-					}
-				});
-				
-				app.execute.getTranslations(word.id, function(array){
-					if(array[0] != null) {
-						for(i=0;i<array.length;i++) {
-							$("#language-"+array[i].language).val(array[i].word);
-							$("#update-"+array[i].language).html("Update Translation");
-							
-							$("#language-"+array[i].language).attr("data-attribute", array[i].id);
-							app.log("added word id: " + $("#language-"+array[i].language).attr('data-attribute'));
-							
-							$("#language-"+array[i].language).parent().append('<a  id="remove-'+array[i].language+'" class="button remove" data-attribute="'+array[i].id+'">Remove Translation</a>');	
-							
-							addRemoveEvent(array[i].language);
-						}
-					}
-				});
-			});
-		});
-		
-		function addRemoveEvent(language) {
-			$("#remove-"+language).on("click tap", function(){
-				var word_id = $(this).attr('data-attribute');
-				var language = $(this).parent().attr('data-attribute');
-				
-				app.execute.removeTranslation(word_id, function(result){
-					$("#language-"+language).val('');
-					$("#remove-"+language).remove();
-					$("#update-"+language).html("Add Translation");
-				});
+	var chosen = app.execute.getChosen();
+
+	var latestWord = app.execute.getLatestWord(chosen.name);
+
+	$(".theLanguage").attr('src', chosen.flag);
+	$("#translationTitle span").html("Translate " + app.lastWord);
+
+	$(".translationLanguages").html();
+	for(var language in app.database) {
+		if(language !== chosen.name) {
+			var item = '<div class="medium-5 columns language" data-attribute="'+language+'"><img src="'+app.database[language].flag+'" style="width: 100px;"> <input id="language-'+language+'" type="text"> <a id="update-'+language+'" class="button updateLanguage">Add '+language+' Translation</a></div>';
+
+			$(".translationLanguages").append(item);
+
+			$("#update-"+language).on("click tap", function(){
+				var trans_lang = $(this).attr('id').split("-")[1];
+				var trans_val = $("#language-"+trans_lang).val();
+
+				var result = app.execute.addTranslation(chosen.name, app.lastWord, trans_val, trans_lang);
+
+				if(result === false) {
+					app.editTranslation(language, word, trans_language, trans_language);
+				} else {
+					$(this).html("Update " + trans_lang + " Translation");
+				}
 			});
 		}
+	}
+
+	$("#translateWord").on("click tap", function(){
+		$("#translateModal").foundation('reveal', 'close');
+		app.load.word();
+	});
+
 </script>

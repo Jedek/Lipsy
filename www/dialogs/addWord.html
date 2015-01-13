@@ -14,30 +14,27 @@
 </div>
 
 <script type="text/javascript">
-		app.execute.getChosenLanguage(function(language){
-			$(".theLanguage").attr('src', 'theme/img/'+language[0].image);
-		});
-		
-		$("#cancel").on("click tap", function(){
-			$("#wordModal").foundation('reveal', 'close');
-		});
+	var language = app.execute.getChosen();
 
-		$("#addWord").on("click tap", function(){
-			$(".error").html();
-			$(".error").hide();
-			
-			var word = $("#theWord").val();
-			
-			app.log("adding word " + word);
-			
-			app.execute.addWord(word, function(result){
-				if(result) {
-					app.log("We have a positive result!");
-					$('#translateModal').foundation('reveal', 'open', 'dialogs/addTranslation.html');
-				} else {
-					$(".error").html("Something went wrong");
-					$(".error").show();
-				}
-			});
-		});
+	$(".theLanguage").attr('src', language.flag);
+
+	$("#cancel").on("click tap", function(){
+		$("#wordModal").foundation('reveal', 'close');
+	});
+
+	$("#addWord").on("click tap", function(){
+		$(".error").html();
+		$(".error").hide();
+
+		var word = $("#theWord").val();
+
+		var result = app.execute.addWord(language.name, word);
+
+		if(result) {
+			$('#translateModal').foundation('reveal', 'open', 'dialogs/addTranslation.html');
+		} else {
+			$(".error").html("Something went wrong");
+			$(".error").show();
+		}
+	});
 </script>

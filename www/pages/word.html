@@ -28,37 +28,19 @@
 </div>
 
 <script type="text/javascript">
-	var word = nova.application.currentPage.the_word;
-	var language = nova.application.currentPage.the_language;
-	
-	$("#wordTitle img").attr("src", "theme/img/"+language.image);
-	$("#wordTitle span").html(word.word);
-	
-	$("#back").on("click tap", function(){
-		app.load.index();
-	});
-	
-	app.execute.getTranslations(word.id, function(translations){
-		app.execute.getAllLanguages(function(languages){
-			$(".wordTranslations").empty();
-			for(i=0;i<languages.length;i++) {
-				if(languages[i].id != language.id) {
-					var div = '<div id="language-'+languages[i].id+'" class="panel small-5 columns" data-attribute="'+languages[i].id+'"><img class="theLanguage" src="theme/img/'+languages[i].image+'" style="width: 30px;"> <a> </a></div>';
-					
-					$(".wordTranslations").append(div);
-				}
-				
-				for(b=0;b<translations.length;b++) {
-					$("#language-"+translations[b].language+" a").html(translations[b].word);
-					$("#language-"+translations[b].language+" a").attr('data-attribute', translations[b].id);
-					
-					$("#language-"+translations[b].language+" a").on("click tap", function(){
-						var goToWord = $(this).attr("data-attribute");
-						
-						app.load.word(goToWord);
-					});
-				}
-			}
-		});
-	});
+
+	var chosen = app.execute.getChosen();
+
+	var latestWord = app.lastWord;
+
+	$(".theLanguage").attr('src', chosen.flag);
+	$("#wordTitle span").html(app.lastWord);
+
+	for(var translation in app.database[chosen.name].words[latestWord])
+
+
+	var div = '<div id="language-'+languages[i].id+'" class="panel small-5 columns" data-attribute="'+languages[i].id+'"><img class="theLanguage" src="theme/img/'+languages[i].image+'" style="width: 30px;"> <a> </a></div>';
+
+	$(".wordTranslations").append(div);
+
 </script>

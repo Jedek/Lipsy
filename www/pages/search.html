@@ -11,53 +11,57 @@
     	<div class="panel results">
     		
     	</div>
+
+		<div class="panel">
+				<a href="#" id="back" class="button"> Back </a>
+		</div>
 	</div>
 </div>
 
 
 <script type="text/javascript">
+	var chosen = app.execute.getChosen();
+
+	$("#back").on('click tap', function(){
+		app.load.index();
+	});
+
 	$("#searchBox").on('input', function(){
 		var value = $(this).val();
-		
-		app.log("Searching for word: " + value);
-		
-		
-		app.execute.findWord(value, function(words){
-			$(".results").empty();
-			
-			if(value != "") {
-				words.forEach(function(word){
-					app.log(JSON.stringify(word), 'Test');
-					
-					app.execute.getTranslations(word.id, function(translations){
-						app.log("Translations for word: " + word.word + " are: " + JSON.stringify(translations));
 
-						var translateDiv = '<div class="row translations">';
-						translations.forEach(function(translation){
-							
-							if(translation != null) {
-								translateDiv += '<div class="small-6 columns">'+
-										'<img class="theLanguage" src="theme/img/'+translation.image+'"> <span>'+translation.word+'</span>'+
-									'</div>';	
-							}
-						});
-						translateDiv += '</div>';
-						
-						var div = '<div class="result">'+
-				    			'<div class="row theWord">'+
-					    			'<div class="small-6 columns">'+
-										'<img class="theLanguage" src="theme/img/'+word.image+'"> <span>'+word.word+'</span>'+
-									'</div>'+
-									'<div class="small-6 columns">'+
-										'<a href="#" class="button expand" data-value="'+word.id+'">View Word</a>'+
-									'</div>'+
-				    			'</div>'+
-				    			translateDiv+
-				    	'</div>';
-						$(".results").append(div);
-					});
-				});	
+		$(".results").html('');
+
+
+		if(value !== '') {
+			var results = app.execute.search(chosen.name, value);
+
+			for(i=0;i<results.length;i++) {
+				var translateDiv = '<div class="row translations">';
+				var translations = app.database[chosen.name].words[results[i]];
+
+				for(var language in translations) {
+					console.log("Test: "+ language);
+					translateDiv += '<div class="small-6 columns">'+
+					'<img class="theLanguage" src="'+app.database[language].flag+'"> <span>'+translations[language]+'</span>'+
+					'</div>';
+				}
+				translateDiv += '</div>';
+
+
+				var div = '<div class="result">'+
+						'<div class="row theWord">'+
+						'<div class="small-6 columns">'+
+						'<img class="theLanguage" src="'+app.database[chosen.name].flag+'"> <span>'+results[i]+'</span>'+
+						'</div>'+
+						'<div class="small-6 columns">'+
+						'<a href="#" class="button expand" data-value="'+results[i]+'">View Word</a>'+
+						'</div>'+
+						'</div>'+
+						translateDiv+
+						'</div>';
+
+				$(".results").append(div);
 			}
-		});
+		}
 	});
 </script>

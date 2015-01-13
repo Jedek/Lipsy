@@ -22,6 +22,10 @@ body, html {
 	background-color: #EBD0BC;
 }
 
+.columns {
+	padding: 0;
+}
+
 .languages {
 	height: 15% !important;
 	width: 90%;
