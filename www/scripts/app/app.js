@@ -6,6 +6,10 @@ var app = {
     database: null,
     lastWord: null,
 
+    practiceLanguage: null,
+    practiceWordsAmount: 0,
+    practiceWords: null,
+
     initialize: function(){
         console.log("Initializing application");
         LocalStorage.initialize();
@@ -161,6 +165,67 @@ var app = {
             }
 
             return results;
+        },
+
+        /**
+         * Practice
+         */
+        chooseLanguage: function(practiceLanguage){
+            for(var language in app.database) {
+                if(language === practiceLanguage) {
+                    app.practiceLanguage = practiceLanguage;
+                }
+            }
+        },
+
+
+        chooseAmountWords: function(amount) {
+            var count = 0;
+
+            for(var word in app.database[app.practiceLanguage].words) {
+                count++;
+            }
+
+            if(count <= amount) {
+                app.practiceWordsAmount = count;
+            } else {
+                app.practiceWordsAmount = amount;
+            }
+        },
+
+        getPracticeWords: function(){
+            var existingWords = [];
+            var chosenWords = [];
+
+            for(var word in app.database[app.practiceLanguage].words) {
+                existingWords.push([word,app.database[app.practiceLanguage].words[word]]);
+            }
+
+            for(var i=0;i<app.practiceWordsAmount;i++) {
+                var randomWord =  Math.floor(Math.random() * existingWords.length);
+
+                if(existingWords[randomWord] !== undefined) {
+                    chosenWords.push(existingWords[randomWord]);
+                    delete existingWords[randomWord];
+                } else {
+                    i--;
+                }
+            }
+
+            return chosenWords;
+
+        },
+
+        giveAnswer: function(word, answer){
+            var chosen = app.execute.getChosen();
+            answer = app.execute.formatWord(answer);
+
+            if(app.database[chosen.name].words[word][app.practiceLanguage] === answer) {
+                return true;
+            } else {
+                return false;
+            }
         }
+
     }
 };
