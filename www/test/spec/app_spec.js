@@ -27,7 +27,7 @@ describe("App", function(){
     it("should retrieve the chosen language", function(){
         var chosen = app.execute.getChosen();
 
-        expect(chosen).toBeDefined();
+        expect(chosen).not.toBeNull();
     });
 
     describe("Words", function(){
@@ -91,7 +91,7 @@ describe("App", function(){
             app.execute.addWord("English", "Door");
             app.execute.addWord("English", "Bell");
 
-            expect(app.execute.search("English", "T").length).toBe(5);
+            expect(app.execute.search("English", "T").length).toBeGreaterThan(4);
             expect(app.execute.search("English", "Ta").length).toBe(2);
             expect(app.execute.search("English", "Boat").length).toBe(1);
 

@@ -27,7 +27,7 @@ window.LocalStorage = {
 
             LocalStorage.set(LocalStorage.databaseName,json);
 
-            var database = LocalStorage.get(this.databaseName);
+            database = LocalStorage.get(this.databaseName);
         }
 
         return JSON.parse(database);
@@ -43,5 +43,9 @@ window.LocalStorage = {
 
     set: function(key, value) {
         localStorage.setItem(key, value);
+    },
+
+    remove: function(key) {
+        localStorage.clear(key);
     }
 };

@@ -1,166 +1,166 @@
+/**
+ * Created by jeroen.klerk on 2015-01-09.
+ */
 var app = {
 
-    initialize: function() {
-    	app.log("Initializing program.");
-    	
-    	this.store = new WebSqlStore();
-    	
-    	this.store.initialize(function(){
-    		app.store.setAppData();
-    		app.load.index();
-    	});
-    	
+    database: null,
+    lastWord: null,
+
+    initialize: function(){
+        console.log("Initializing application");
+        LocalStorage.initialize();
+
+        this.database = LocalStorage.getData();
+
+        app.load.index();
     },
-    
-    log: function(message, sender) {
-    	if(sender === null){
-    		sender = "Phonegap";
-    	}
-    	
-    	console.log(sender + ":: " + message);
-    },
-    
+
     load: {
-    	index: function() {
-    		var home = new nova.Page("home.html");
-    		
-    		app.store.getLanguages(function(result){
-    			app.log("Found languages");
-    			
-    			home.languages = result;
-    		});
-    		
-    		app.execute.getChosenLanguage(function(chosen_language){
-    			
-    			home.chosen = chosen_language;
-    			
-    			nova.application.gotoPage(home);
-    		});
-    	},
-    	
-    	add: function() {
-    		var add = new nova.Page("pages/add.html");
-    		
-    		app.execute.getChosenLanguage(function(chosen_language){
-    			add.chosen = chosen_language;
-    			
-    			nova.application.gotoPage(add);
-    		});
-    	},
-    	
-    	word: function(word) {
-    		var wordPage = new nova.Page("pages/word.html");
-    		
-    		if(word === null) {
-    			app.execute.getLatestWord(function(theWord){
-    				app.execute.getLanguage(theWord.language, function(language){
-    					wordPage.the_word = theWord;
-    					wordPage.the_language = language;
-    				
-    					nova.application.gotoPage(wordPage);
-    				});
-    			});	
-    		} else {
-    			app.execute.getWord(word, function(theWord){
-    				app.execute.getLanguage(theWord.language, function(language){
-    					wordPage.the_word = theWord;
-    					wordPage.the_language = language;
-    				
-    					nova.application.gotoPage(wordPage);
-    				});    				
-    			});
-    		}
-    	},
-    	
-    	search: function() {
-    		var search = new nova.Page("pages/search.html");
-    		
-    		nova.application.gotoPage(search);
-    	}
+        index: function() {
+            var home = new nova.Page("home.html");
+            nova.application.gotoPage(home);
+        },
+
+        word: function() {
+            var word = new nova.Page("pages/word.html");
+            nova.application.gotoPage(word);
+        },
+
+        search: function() {
+            var search = new nova.Page("pages/search.html");
+            nova.application.gotoPage(search);
+        }
     },
-    
+
     execute: {
-    	updateApp: function(attribute, value) {
-    		app.store.updateAppData(attribute, value);
-    	},
-    	
-    	getChosenLanguage: function(callback) {
-    		app.store.getAppData(function(result){
-    			
-    			var chosen_language = 1;
-    			
-    			if(result !== null) {
-    				if(result.latest_language !== null) {
-    					chosen_language = result.latest_language;	
-    				}	
-    			}
-    			
-    			app.store.getLanguage(chosen_language, callback);
-    		});
-    	},
-    	
-    	getAllLanguages: function(callback) {
-    		app.store.getLanguages(callback);
-    	},
-    	
-    	getLanguage: function(id, callback) {
-    		app.store.getLanguage(id, callback);
-    	},
-    	
-    	findWord: function(search, callback) {
-    		app.store.findWord(search, callback);
-    	},
-    	
-    	getLatestWord: function(callback) {
-    		app.store.getAppData(function(result){
-    			if(result !== null) {
-    				app.log("Latest word id is: " + JSON.stringify(result));
-    				var latest_word = result[0].latest_word;
-    				app.store.getWord(latest_word, callback);
-    			}
-    		});
-    	},
-    	
-    	getWord: function(id, callback) {
-    		app.store.getWord(id, callback);
-    	},
-    	
-    	addWord: function(word, callback) {
-    		app.execute.getChosenLanguage(function(language){
-    			app.store.addWord(word, language[0].id, function(result){
-					app.log("Latest word is: " + result[0].word);
-					app.execute.updateApp('latest_word', result[0].id);
-					callback(result);
-    			});
-    		});
-    	},
-    	
-    	getTranslations: function(word, callback) {
-    		app.store.getTranslations(word, function(translations){
-    			if(Array.isArray(translations)) {
-    				callback(translations);
-    			} else {
-    				var array = [];
-    				array.push(translations);
-    				callback(array, word);
-    			}
-    		});
-    	},
-    	
-    	/**
-    	 * 
-		 * @param {Object} word 		The Original Word
-		 * @param {Object} translation  Translation of the Original Word
-		 * @param {Object} translation_id			ID of the translation word
-		 * @param {Object} language		ID of the language of the translation
-		 * @param {Object} callback
-    	 */
-    	updateTranslation: function(word, translation, translation_id, language, callback) {
-    		app.store.addTranslation(word, translation, translation_id, language, callback);
-    	},
-    	
-    	removeTranslation: function(word, callback) {
-    		app.store.removeTranslation(word, callback);	
-    	}
+        setChosen: function(chosen) {
+            for(var language in app.database) {
+                if(language === chosen) {
+                    app.database[language].chosen = true;
+                } else {
+                    app.database[language].chosen = false;
+                }
+            }
+
+            LocalStorage.saveData(app.database);
+        },
+
+        getChosen: function() {
+            for(var language in app.database) {
+                if(app.database[language].chosen === true) {
+                    return app.database[language];
+                }
+            }
+
+            return undefined;
+        },
+
+        /**
+         * Words
+         */
+
+        addWord: function(language, new_word) {
+
+            var found = false;
+
+            new_word = app.execute.formatWord(new_word);
+
+            for(var word in app.database[language].words) {
+                if(word === new_word) {
+                    found = true;
+                }
+            }
+
+            if(found) {
+                console.warn("Warning. There was an attempt to add an existing word");
+                return false;
+            } else {
+                app.database[language].words[new_word] = {};
+
+                LocalStorage.saveData(app.database);
+                app.lastWord = new_word;
+                return true;
+            }
+        },
+
+        getLatestWord: function(language){
+
+            for(var word in app.database[language].words){
+                if(word === app.lastWord) {
+                    return app.database[language].words[word];
+                }
+            }
+            return undefined;
+        },
+
+        removeWord: function(language, remove_word) {
+            remove_word = app.execute.formatWord(remove_word);
+
+            delete app.database[language].words[remove_word];
+            LocalStorage.saveData(app.database);
+        },
+
+        formatWord: function(the_word) {
+            the_word = the_word.toLowerCase();
+
+            return the_word.charAt(0).toUpperCase() + the_word.slice(1);
+        },
+
+        /**
+         * Translations
+         */
+
+        addTranslation: function(language, word, new_translation, trans_language) {
+            var found = false;
+            new_translation = app.execute.formatWord(new_translation);
+            for(var translation in app.database[language].words[word]) {
+
+                if(app.database[language].words[word][trans_language] === new_translation) {
+                    found = true;
+                }
+            }
+
+            if(found) {
+                console.warn("Warning. There was an attempt to add an existing translation");
+
+                return false;
+            } else {
+                app.database[language].words[word][trans_language] = new_translation;
+
+                LocalStorage.saveData(app.database);
+                return true;
+            }
+        },
+
+        editTranslation: function(language, word, trans_language, new_translation) {
+            app.database[language].words[word][trans_language] = new_translation;
+            LocalStorage.saveData(app.database);
+        },
+
+        removeTranslation: function(language, word, translation) {
+            translation = app.execute.formatWord(translation);
+            delete app.database[language].words[word][translation];
+            LocalStorage.saveData(app.database);
+        },
+
+
+        /**
+         * Search
+         */
+        search: function(language, searchWord) {
+
+            var results = [];
+
+            searchWord = app.execute.formatWord(searchWord);
+
+            for(var word in app.database[language].words) {
+
+                if(word.indexOf(searchWord) > -1) {
+                    results.push(word);
+                }
+            }
+
+            return results;
+        }
     }
 };

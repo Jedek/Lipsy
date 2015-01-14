@@ -1,9 +1,16 @@
 /**
  * Created by jeroen.klerk on 2015-01-09.
  */
+
 describe("LocalStorage", function(){
     it("should initialize", function(){
         expect(LocalStorage.initialize()).toBeTruthy();
+    });
+
+    it("should load the database",function(){
+        LocalStorage.getData();
+
+        expect(LocalStorage.get(LocalStorage.databaseName)).not.toBeNull();
     });
 
     it("should be able to set and get information", function(){
@@ -12,12 +19,9 @@ describe("LocalStorage", function(){
         expect(LocalStorage.get("TestKey")).not.toBeNull();
     });
 
-    it("should load the database",function(){
+    it("should be able to remove information", function(){
+        LocalStorage.remove("TestKey");
 
-        LocalStorage.getData();
-
-        expect(LocalStorage.get(LocalStorage.databaseName)).not.toBeNull();
+        expect(LocalStorage.get("TestKey")).toBeNull();
     });
-
-
 });
